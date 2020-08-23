@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using EF_LINQ_OPS.Models;
+using RestSharp;
+using Newtonsoft.Json;
 
 namespace EF_LINQ_OPS.Controllers
 {
@@ -66,6 +68,64 @@ namespace EF_LINQ_OPS.Controllers
         public IActionResult Chart()
         {
             return View();
+        }
+        public IActionResult Indian_api()
+        {
+            var client = new RestClient("https://tasty.p.rapidapi.com/recipes/list?tags=indian&from=0&sizes=1000");
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("x-rapidapi-host", "tasty.p.rapidapi.com");
+            request.AddHeader("content-type", "application/json");
+            request.AddHeader("x-rapidapi-key", "f65c9575d9msh7401166d92cbee6p105425jsnd68297f07086");
+            IRestResponse response = client.Execute(request);
+
+
+
+            /*
+            httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Accept.Clear();
+            httpClient.DefaultRequestHeaders.Add("X-Api-Key", API_KEY);
+            httpClient.DefaultRequestHeaders.Accept.Add(
+                new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            string NATIONAL_PARK_API_PATH = BASE_URL + "recipes/list?tags=mexican&q=horchata&from=0&sizes=20";
+            string parksData = "";
+            httpClient.BaseAddress = new Uri(NATIONAL_PARK_API_PATH);*/
+            string recipeData = "";
+            Root recipe = null;
+            //response.Content.;
+
+            try
+            {
+                // HttpResponseMessage response = httpClient.GetAsync(NATIONAL_PARK_API_PATH).GetAwaiter().GetResult();
+
+                if (response.IsSuccessful)
+                {
+                    recipeData = response.Content.ToString();
+
+
+                    //recipe = JsonConvert.DeserializeObject<Recipe>(response.ContentEncoding);
+                }
+
+                // Use https://json2csharp.com/ to convert JSON to classes
+
+                if (!recipeData.Equals(""))
+                {
+                    //recipe = JsonConverterFactory(recipeData.);
+                    recipe = JsonConvert.DeserializeObject<Root>(recipeData);
+                }
+            }
+            catch (Exception e)
+            {
+                // This is a useful place to insert a breakpoint and observe the error message  
+                Console.WriteLine(e.Message);
+            }
+            List<Result> res;
+
+            res = recipe.results.Where(r => r.user_ratings != null)
+            .OrderByDescending(r => r.user_ratings.score).ToList();
+
+            //res = recipe.results.Where(r => r.user_ratings != null).ToList();
+            //return View(parks);
+            return View(res);
         }
     }
 }

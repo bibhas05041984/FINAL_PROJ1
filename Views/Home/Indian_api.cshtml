@@ -1,0 +1,136 @@
+﻿
+@{
+    Layout = null;
+}
+
+@*<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Final_Project_API</title>
+        <link rel="stylesheet" href="~/wwwroot/css/site.css" />
+    </head>
+    <body>*@
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home page - Group4_Assignment2</title>
+    <style>
+        body {
+            background-image: radial-gradient( circle farthest-corner at 78% 59.3%, rgba(255,104,104,1) 0%, rgba(230,127,41,1) 90% );
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: #333;
+        }
+
+            .topnav a {
+                float: left;
+                color: #f2f2f2;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+                font-size: 17px;
+            }
+    </style>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/site.css" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+    <div class="topnav">
+        <a asp-controller="home" asp-action="Index">Home</a>
+        <a asp-controller="home" asp-action="Mexican">Mexican</a>
+        <a asp-controller="home" asp-action="Japanese">Japanese</a>
+        <a asp-controller="home" asp-action="Indian">Indian</a>
+        <a asp-controller="home" asp-action="Indian_api">Indian Recipes</a>
+        <a asp-controller="home" asp-action="Beersindex2">Beers</a>
+        <a asp-controller="home" asp-action="Chart">Graph</a>
+        <a asp-controller="home" asp-action="AboutUs">About Us</a>
+        <a asp-controller="Revwr" asp-action="Index">Food Review</a>
+
+    </div>
+    <h2>Final Project: API consumption</h2>
+    <h4>This Page returns recipe data of most popular cuisines from the Tasty API of RapidApi.com.</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Video_link</th>
+                <th>positive_reviews</th>
+                <th>negative_reviews</th>
+                <th>score</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Result root in Model)
+            {
+                @if ((root.name != null) && (root.thumbnail_url != null)
+                && (root.video_url != null) && (root.user_ratings.count_positive != null)
+                && (root.user_ratings.count_negative != null) && (root.user_ratings.score != null))
+                //break;
+                //else
+                {
+
+                    /* @if ((root.name == null) || (root.thumbnail_url == null) || (@root.video_url == null) )
+                             break;
+                         else
+                     {*/
+
+                    @if (root.name == null)
+                    { root.name = "Not Available"; }
+
+                    @if (root.thumbnail_url == null)
+                    { root.thumbnail_url = "Not Available"; }
+
+                    @if (root.video_url == null)
+                    { root.video_url = "Not Available"; }
+                    /*
+                        @if (root.user_ratings.count_positive == null)
+                        {
+                            root.user_ratings.count_positive = 0;
+                        }
+                        @if (root.user_ratings.count_negative == null)
+                        {
+                            root.user_ratings.count_negative = 0;
+                        }
+                        @if (root.user_ratings.score == null)
+                        {
+                            root.user_ratings.score = 0;
+                        }
+                    */
+                    <tr>
+                        <td><img src="@root.thumbnail_url" alt="" border=6 height=200 width=200></td>
+                        <td>@root.name</td>
+                        <!--<td><a href="root.original_video_url">original_video_link</a></td>-->
+                        <td><a href="@root.video_url">video_link</a></td>
+
+                        <td>@root.user_ratings.count_positive </td>
+                        <td>@root.user_ratings.count_negative </td>
+                        <td>@root.user_ratings.score</td>
+
+
+                    </tr>
+                }
+            }
+            @*</tbody>
+                    </table>
+                </body>*@
+
+            <footer class="border-top footer text-muted">
+                <div class="container">
+                    &copy; MSBAIS-2020 Group4 Assignment 2 - <a asp-controller="home" asp-action="AboutUs">About Us</a>
+                </div>
+            </footer>
+</body>
+</html>
